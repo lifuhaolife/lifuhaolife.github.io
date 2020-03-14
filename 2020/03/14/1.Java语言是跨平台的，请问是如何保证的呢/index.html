@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1.Java语言是跨平台的，请问是如何保证的呢?      因为它有虚拟机（JVM），JAVA程序不是直接在电脑上运行的，是在虚拟机上进行的，每个系统平台都是有自己的虚拟机（JVM），所以JAVA语言能跨平台。. 2.JDK,JRE,JVM的作用及关系？ JVM:英文全称，Java Virtual Machine,是Java虚拟机，用来运行Java程序 JRE:英文全称，Java Runtime">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java基础总结">
+<meta property="og:url" content="http://yoursite.com/2020/03/14/1.Java%E8%AF%AD%E8%A8%80%E6%98%AF%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%9A%84%EF%BC%8C%E8%AF%B7%E9%97%AE%E6%98%AF%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E7%9A%84%E5%91%A2/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="1.Java语言是跨平台的，请问是如何保证的呢?      因为它有虚拟机（JVM），JAVA程序不是直接在电脑上运行的，是在虚拟机上进行的，每个系统平台都是有自己的虚拟机（JVM），所以JAVA语言能跨平台。. 2.JDK,JRE,JVM的作用及关系？ JVM:英文全称，Java Virtual Machine,是Java虚拟机，用来运行Java程序 JRE:英文全称，Java Runtime">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-14T03:59:18.564Z">
+<meta property="article:modified_time" content="2020-03-14T05:41:54.050Z">
+<meta property="article:author" content="lfh">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/14/1.Java%E8%AF%AD%E8%A8%80%E6%98%AF%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%9A%84%EF%BC%8C%E8%AF%B7%E9%97%AE%E6%98%AF%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E7%9A%84%E5%91%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>java基础总结 | </title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title"></span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">与大家一起分享自己的认识</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/14/1.Java%E8%AF%AD%E8%A8%80%E6%98%AF%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%9A%84%EF%BC%8C%E8%AF%B7%E9%97%AE%E6%98%AF%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E7%9A%84%E5%91%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="lfh">
+      <meta itemprop="description" content="主要想记录一下自己的在于学习之中遇到的一些问题，分享一些自己的认识">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java基础总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-14 11:59:18 / 修改时间：13:41:54" itemprop="dateCreated datePublished" datetime="2020-03-14T11:59:18+08:00">2020-03-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">java基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1.Java语言是跨平台的，请问是如何保证的呢?<br>      因为它有虚拟机（JVM），JAVA程序不是直接在电脑上运行的，是在虚拟机上进行的，每个系统平<br>台都是有自己的虚拟机（JVM），所以JAVA语言能跨平台。.</p>
+<p>2.JDK,JRE,JVM的作用及关系？</p>
+<p>JVM:英文全称，Java Virtual Machine,是Java虚拟机，用来运行Java程序</p>
+<p>JRE:英文全称，Java Runtime Environment,是Java运行时环境，里边包含了Java运行时所需要的类库。</p>
+<p>JDK:英文全称，Java Development Kit,是Java开发工具包，里边包含了Java的开发工具。例如java,javac等。</p>
+<p>JDK：JRE+java开发工具</p>
+<p>JRE：JVM+类库（lib）</p>
+<p>​       </p>
+<pre><code>①SE(J2SE)，standard edition，标准版，是我们通常用的一个版本，从JDK 5.0开始，改名为Java SE。</code></pre><p>　　②EE(J2EE)，enterprise edition，企业版，使用这种JDK开发J2EE应用程序，从JDK 5.0开始，改名为Java EE。</p>
+<p>　　③ME(J2ME)，micro edition，主要用于移动设备、嵌入式设备上的java应用程序，从JDK 5.0开始，改名为Java ME。</p>
+<p>3.进制转换</p>
+<p>(1)其他进制到十进制<br>        系数：就是每一个位上的数值<br>        基数：x进制的基数就是x<br>        权：对每一个位上的数据，从右，并且从0开始编号，对应的编号就是该数据的权。</p>
+<pre><code>    结果：系数*基数^权次幂之和。
+(2)十进制到其他进制
+    除基取余，直到商为0，余数反转。</code></pre><p>另外：2&lt;&lt;3     ==2*2^3</p>
+<p>4.数据类型转换<br>    (1)boolean类型不参与转换<br>    (2)默认转换<br>        A:从小到大<br>        B:byte,short,char – int – long – float – double<br>        C:byte,short,char之间不相互转换，直接转成int类型参与运算。<br>    (3)强制转换<br>        A:从大到小<br>        B:可能会有精度的损失，一般不建议这样使用。<br>        C:格式：<br>            目标数据类型 变量名 = (目标数据类型) (被转换的数据);<br>    (4)思考题和面试题：<br>        1:下面两种方式有区别吗?<br>            float f1 = 12.345f;<br>            float f2 = (float)12.345;<br>                前者12.345本身是一个float类型的数据，而后者12.345是个double类型的，经过强制转换赋值给f2<br>        2:下面的程序有问题吗，如果有，在哪里呢?<br>            byte b1 = 3;<br>            byte b2 = 4;<br>            byte b3 = b1 + b2;<br>            byte b4 = 3 + 4;<br>            第三行有问题，因为可能存在精度损失的情况。<br>        3:下面的操作结果是什么呢?<br>            byte b = (byte)130;//-126</p>
+<ul>
+<li><p>分析过程： 我们要想知道结果是什么，就应该知道是如何进行计算的。 而我们又知道计算机中数据的运算都是补码进行的。<br>而要得到补码，首先要计算出数据的二进制。<br>*</p>
+</li>
+<li><p>A:获取130这个数据的二进制。 00000000 00000000 00000000 10000010 这是130的原码，也是反码，还是补码。</p>
+</li>
+<li><p>B:做截取操作，截成byte类型的了。 10000010 这个结果是补码。</p>
+</li>
+<li><p>C:已知补码求原码。 符号位 数值位 补码： 1 0000010</p>
+</li>
+<li><p>反码： 1 0000001</p>
+<ul>
+<li>原码： 1 1111110    </li>
+</ul>
+<p>D:字符参与运算</p>
+<pre><code>是查找ASCII里面的值
+&apos;a&apos;        97
+&apos;A&apos;        65
+&apos;0&apos;        48
+
+System.out.println(&apos;a&apos;);
+System.out.println(&apos;a&apos; + 1);</code></pre></li>
+</ul>
+<p>E:字符串参与运算<br>            这里其实是字符串的连接<br>            System.out.println(“hello”+’a’+1);  //helloa1<br>            System.out.println(‘a’+1+”hello”);    //98hello<br>            System.out.println(“5+5=”+5+5);    //5+5=55<br>            System.out.println(5+5+”=5+5”);    //10=5+5</p>
+<p>5.switch语句的表达式可以是byte吗?可以是long吗?可以是String吗?<br>         switch语句的表达式可以是byte，可以是long，jdk1.7之后可以是String。</p>
+<p>6.for和while的区别？<br>            a:使用上的区别<br>                for语句的那个控制条件变量,在循环结束后不能在使用了。<br>                而while的可以继续使用。<br>            b:理解上的区别<br>                for适合于一个范围的判断<br>                while适合次数不明确的<br>                    举例:吃葡萄</p>
+<p>7.Java的内存分配<br>1.寄存器：最快的存储区, 由编译器根据需求进行分配,我们在程序中无法控制.<br>2. 栈：存放基本类型的变量数据和对象的引用，但对象本身不存放在栈中，而是存放在堆（new 出来的对象）或者常量池中（字符串常量对象存放在常量池中。）<br>3. 堆：存放所有new出来的对象。<br>4. 静态域：存放静态成员（static定义的）<br>5. 常量池：存放字符串常量和基本类型常量（public static final）。<br>6. 非RAM存储：硬盘等永久存储空间</p>
+<p>8:栈内存和堆内存的区别:？<br>                栈：数据使用完，会被垃圾回收器在空闲的时候回收。<br>                堆：每一个new出来的东西都有地址， 每一个变量都有默认值   </p>
+<p>byte,short,int,long      默认 0</p>
+<p>float,double     默认0.0<br>char                 默认’\u0000’<br>boolean           默认 false<br>引用类型         默认null<br>                常量池中维护的常量仅仅是【-128至127】而String型是先检测常量池中有没有对应字符串，如果有，则取出来；<br>如果没有，则把当前的添加进去。</p>
+<p>9.Java程序的开发，设计和特征？<br>        A:开发：就是不断的创建对象，通过对象调用功能<br>        B:设计：就是管理和维护对象间的关系<br>        C:特征：a:封装 b:继承 c:多态 （d:抽象）</p>
+<p>10.成员变量和局部变量的区别?</p>
+<p> (1)在类中的位置不同<br>        成员变量：类中方法外，用来描述类。<br>        局部变量：方法定义中或者方法声明上<br>    (2)在内存中的位置不同<br>        成员变量：在堆中<br>        局部变量：在栈中<br>    (3)生命周期不同<br>        成员变量：随着对象的创建而存在，随着对象的消失而消失<br>        局部变量：随着方法的调用而存在，随着方法的调用完毕而消失<br>    (4)初始化值不同<br>        成员变量：有默认值<br>        局部变量：没有默认值，必须定义，赋值，然后才能使用</p>
+<p>11.构造方法中可不可以有return语句呢?<br>        可以。而是我们写成这个样子就OK了：return;<br>        其实，在任何的void类型的方法的最后你都可以写上：return,代表方法结束;</p>
+<p>12.Override和Overload的区别?Overload是否可以改变返回值类型?<br>        a.Overload是指重载，在同一个类中，存在方法名相同，参数列表不同的方法。</p>
+<p>重载与返回值类型无关。Overload的方法可以改变返回值的类型，因为它与返回值类型无关。<br>        b. Override是指重写， 存在于子父类，或者子父接口中，方法声明相同   </p>
+<p>13.this和super的区别和各自的作用?<br>            属性的区别：this访问本类中的属性，如果本类没有此属性则从父类中继续查找。super访问父类中的属性。<br>            方法的区别：this访问本类中的方法，如果本类没有此方法则从父类中继续查找。super访问父类中的方法。<br>            构造的区别：this调用本类构造，必须放在构造方法的首行。super调用父类构造，必须放在子类构造方法首行。<br>            其他区别：this表示当前对象。super不能表示父类对象</p>
+<p>14.一个类的初始化过程<br>            加载：由类加载器执行，查找字节码并从字节码创建一个class对象。<br>            链接：在链接阶段将验证类中的字节码，为静态区域分配存储空间，并且如果必须的话，将解析这个类创建的对其他类的所有引用<br>            初始化：首先初始化静态代码块、静态变量、静态方法，如果该类有超类，则对其初始化执行顺序：</p>
+<p>静态代码块 &gt; 构造代码块 &gt; 构造方法</p>
+<p>15.final关键字<br>    (1)finall是最终的意思，可以修饰类，方法，变量。<br>    (2)特点：<br>        A:它修饰的类，不能被继承。<br>        B:它修饰的方法，不能被重写。<br>        C:它修饰的变量，是一个常量。</p>
+<p>16.抽象类的特点<br>        A:抽象类和抽象方法必须用关键字abstract修饰<br>        B:抽象类中不一定有抽象方法,但是有抽象方法的类一定是抽象类<br>        C:抽象类不能实例化<br>        D:抽象类的子类<br>            a:是一个抽象类。<br>            b:是一个具体类。这个类必须重写抽象类中的所有抽象方法。</p>
+<p>16.1 abstract不能和哪些关键字共存<br>            a:final    冲突<br>            b:private 冲突<br>            c:static 无意义</p>
+<p>17.抽象类和接口的区别?<br>        A:成员区别<br>            抽象类：有变量，有常量，有构造方法，有抽象方法，可以有非抽象方法<br>           接口：成员变量只能是常量，默认public static final修饰，没有构造方法，成员方法只能是抽象方法默认修饰符：public abstract<br>        B:关系区别:<br>            类与类：继承<br>            类与接口：实现<br>            接口与接口：继承<br>        C:设计理念不同<br>            抽象类：is a，抽象类中定义的是共性功能。<br>            接口：like a，接口中定义的是扩展功能。</p>
+<p>18.权限修饰符(四种权限修饰符在任意时刻只能出现一种)<br>                          本类         同一个包下    不同包下的子类    不同包下的无关类<br>        private          Y<br>        默认              Y                   Y<br>        protected      Y                   Y                      Y<br>        public            Y                   Y                      Y                             Y</p>
+<p>19.内部类<br>        A:可以直接访问外部类的成员，包括私有<br>        B:外部类要想访问内部类成员，必须创建对象<br>        C:局部内部类访问局部变量必须加final修饰。<br>            因为局部变量使用完毕就消失，而堆内存的数据并不会立即消失。<br>            所以，堆内存还是用该变量，而改变量已经没有了。<br>            为了让该值还存在，就加final修饰。<br>            通过反编译工具我们看到了，加入final后，堆内存直接存储的是值，而不是变量名。</p>
+<p>20.static关键字</p>
+<pre><code>a.静态方法只能访问静态成员，非静态成员可以访问静态成员或者非静态成员。
+
+b.非静态内部类中不允许定义静态成员
+
+c.外部类的静态成员不可以直接使用非静态内部类
+
+d.静态内部类，不能访问外部类的实例成员，只能访问外部类的静态成员</code></pre><p>21.==和equals()的区别?<br>            A:==<br>                基本类型：比较的是值是否相同<br>                引用类型：比较的是地址值是否相同<br>            B:equals()<br>                只能比较引用类型。默认情况下，比较的是地址值是否相同。<br>                但是，我们可以根据自己的需要重写该方法。</p>
+<p>22.String和StringBuffer相互转换<br>            String –&gt;StringBuffer<br>                    String s = new String();<br>                方法1：    StringBuffer sb2 = new StringBuffer();<br>                    sb2.append(s);<br>                方法2：    StringBuffer sb2 = new StringBuffer(s);<br>            StringBuffer –&gt; String<br>                方法1 toString()方法:<br>                    String str2 = buffer.toString();<br>                方法2 通过构造方法：<br>                    String str = new String(buffer);//public String(String original)创建的字符串是该参数字符串的副本</p>
+<p>23.String,StringBuffer,StringBuilder的区别<br>            String内容不可变；StringBuffer同步的，数据安全，效率低；StringBuilder：不同步的，数据不安全，效率高。</p>
+<p>24.B:StringBuffer和数组的区别?<br>            二者都是可以看成一个容器装数据，StringBuffer最终数据是一个字符串，而数组可以放多种数据，但必须是同一个类型。</p>
+<p>25.String和int的相互转换<br>A:String – int<br>        String s = “100”;<br>    // 方式1<br>        // String – Integer – int<br>        Integer ii = new Integer(s);<br>        // public int intValue()<br>        int x = ii.intValue();<br>        System.out.println(“x:” + x);<br>    //方式2<br>        //public static int parseInt(String s)<br>        int y = Integer.parseInt(s);    //这个方法最好<br>        System.out.println(“y:”+y);<br>B:int – String<br>    // 方式1<br>        String s1 = “” + number;<br>        System.out.println(“s1:” + s1);<br>    // 方式2<br>        String s2 = String.valueOf(number);    //这个方法最好<br>        System.out.println(“s2:” + s2);<br>    // 方式3<br>        // int – Integer – String<br>        Integer i = new Integer(number);<br>        String s3 = i.toString();<br>        System.out.println(“s3:” + s3);<br>    // 方式4<br>        // publuc static String toString(int i)<br>        String s4 = Integer.toString(number);<br>        System.out.println(“s4:” + s4);<br>        System.out.println(“—————–”);</p>
+<ol start="26">
+<li>++/–使用？<pre><code>**单独使用
+    放在操作数据的前面和后面效果一样。
+    a++或者++a效果一样。
+**参与操作使用
+    放在操作数的前面：先自增或者自减，再参与操作
+        int a = 10;
+        int b = ++a;
+    放在操作数的后面：先参与操作，再自增或者自减
+        int a = 10;
+        int b = a++;</code></pre></li>
+</ol>
+<p>27.+ 以及+=区别？</p>
+<p>1) short s1 = 1; s1 = s1+1;有什么错?// s1 = (short) (s1+1);系统提示要强制转换</p>
+<p>2) short s1 = 1; s1 += 1;有错吗?//没错，由于+=是强制转换的。。</p>
+<pre><code>+：在编译器将右边的表达式结果计算出来后，和左边的变量类型比较精度，如果左边的变量精度低于右边的结果的精度，编译器会显式的报错，告诉程序员去强制转型。（所以s1 = s1 + 1出错）最后将表达式的结果复制到变量所在的内存区。
+
++=：编译器自动隐式直接将+=运算符后面的操作数强制装换为前面变量的类型，然后在变量所在的内存区上直接根据右边的操作数修改左边变量内存存储的二进制数值（所以 s += 1不报错）最后达到和赋值运算符相同的目的。与前者相比，由于后者是位操作，效率也较前者高。</code></pre><ol start="28">
+<li>Java中的参数传递问题？<pre><code>在Java中只有值传递。    
+基本类型：形式参数的改变不影响实际参数
+引用类型：形式参数的改变直接影响实际参数</code></pre></li>
+</ol>
+<p>29.一个类的初始化过程<br>            加载：由类加载器执行，查找字节码并从字节码创建一个class对象。<br>            链接：在链接阶段将验证类中的字节码，为静态区域分配存储空间，并且如果必须的话，将解析这个类创建的对其他类的所有引用<br>            初始化：首先初始化静态块、静态变量、静态方法，如果该类有超类，则对其初始化</p>
+<p>30.子父类的构造执行过程<br>            执行父类的静态代码块。<br>            执行子类的静态代码块。<br>            执行父类的构造代码块。<br>            执行父类的不带参数的构造方法。<br>            执行子类的构造代码块。<br>            执行子类的不带参数的构造方法。</p>
+<p>分层初始化<br>            1.父类静态代码块 （  java虚拟机加载类时，就会执行该块代码，故只执行一次）<br>            2 .子类静态代码块 （  java虚拟机加载类时，就会执行该块代码，故只执行一次）<br>            3. 父类属性对象初始化<br>            4.父类普通代码块（每次new,每次执行 ）<br>            5. 父类构造函数（每次new,每次执行）<br>            6.子 类 属性对象初始化<br>            7.子类普通代码块（每次new,每次执行 ）<br>            8.子 类构造函数（每次new,每次执行）</p>
+<p>31.字符串的面试题(看程序写结果)<br>        A:==和equals()<br>            String s1 = new String(“hello”);<br>            String s2 = new String(“hello”);<br>            System.out.println(s1 == s2);// false    //同样是new出来的对象，在堆里的地址不一样    false<br>            System.out.println(s1.equals(s2));// true    //由于两个对象的内容一样，最终指向方法区常量池的地址是一样的true</p>
+<pre><code>    String s3 = new String(&quot;hello&quot;);
+    String s4 = &quot;hello&quot;;
+    System.out.println(s3 == s4);// false    S3在堆内存中的地址和s4在常量池的地址不一样
+    System.out.println(s3.equals(s4));// true    S3在堆内存中指向常量池hello，s4直接指向常量池的hello
+
+    String s5 = &quot;hello&quot;;
+    String s6 = &quot;hello&quot;;
+    System.out.println(s5 == s6);// true    地址一样
+    System.out.println(s5.equals(s6));// true    地址一样
+B:字符串的拼接
+    String s1 = &quot;hello&quot;;
+    String s2 = &quot;world&quot;;
+    String s3 = &quot;helloworld&quot;;
+    System.out.println(s3 == s1 + s2);// false    地址值的比较不一样
+    System.out.println(s3.equals((s1 + s2)));// true
+    值得注意的是：字符串如果是变量相加，先开空间在拼接，如果是常量相加，先加，再去常量池找
+        有就返回，没有就创建一个返回，如下
+    System.out.println(s3 == &quot;hello&quot; + &quot;world&quot;);// false 这里我判断错了，实际上常量相加，结果应该是true
+    System.out.println(s3.equals(&quot;hello&quot; + &quot;world&quot;));// true</code></pre><p>32.关于==和equals的问题</p>
+<pre><code>equals()方法是ObjectA类的方法，String,Integer,Date都有覆盖这个方法；而==是java中的运算符；
+==比较的是值类型，基本类型都是比较值是不是相等，比较引用类型的是比较的是不是同一个new出来的对象，String字符串常量是比较它指向常量池中字符串是不是相等。
+equals()是用来比较两个对象的内容是不是一样，如果没有覆盖该方法，equals()返回的是==的判断，就是说判断他们是不是同一个new出来的对象。
+String重写了equals()方法，先判断是不是==的，如果是就返回true,如果不是，就判断字符串中的字符相不相等，相等返回true.
+Integerd 的equals方法会将Integer对象拆箱再用==进行比较内容。
+其他：引用类型都是比较地址值，可以通过重写hastcode(),和equals()判断是不是一样的对象。</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/14/1.Spring%20MVC/" rel="next" title="1.Spring MVC">
+      1.Spring MVC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">lfh</p>
+  <div class="site-description" itemprop="description">主要想记录一下自己的在于学习之中遇到的一些问题，分享一些自己的认识</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lfh</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
