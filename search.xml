@@ -93,7 +93,7 @@
 
 
 
-
+<h3 id="对所有的容器启动删除"><a href="#对所有的容器启动删除" class="headerlink" title="对所有的容器启动删除"></a>对所有的容器启动删除</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker中 启动所有的容器命令</span><br><span class="line"># docker start $(docker ps -a | awk &#39;&#123; print $1&#125;&#39; | tail -n +2)</span><br><span class="line"></span><br><span class="line">docker中    关闭所有的容器命令</span><br><span class="line"># docker stop $(docker ps -a | awk &#39;&#123; print $1&#125;&#39; | tail -n +2)</span><br><span class="line"></span><br><span class="line">docker中 删除所有的容器命令</span><br><span class="line"># docker rm $(docker ps -a | awk &#39;&#123; print $1&#125;&#39; | tail -n +2)</span><br><span class="line"></span><br><span class="line">docker中    删除所有的镜像</span><br><span class="line"># docker rmi $(docker images | awk &#39;&#123;print $3&#125;&#39; |tail -n +2)</span><br></pre></td></tr></table></figure>
 
 
 
